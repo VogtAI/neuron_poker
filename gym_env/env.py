@@ -109,7 +109,7 @@ class HoldemTable(Env):
         else:
             from tools.montecarlo_python import get_equity
 
-        if Not calc_equity:
+        if not calc_equity:
             get_equity = lambda a, b, c, d: 0
 
         self.get_equity = get_equity
