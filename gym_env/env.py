@@ -88,7 +88,7 @@ class HoldemTable(Env):
     """Pokergame environment"""
 
     def __init__(self, initial_stacks=100, small_blind=1, big_blind=2, render=False, funds_plot=True,
-                 max_raising_rounds=2, use_cpp_montecarlo=False):
+                 max_raising_rounds=2, use_cpp_montecarlo=False, calc_equity=False):
         """
         The table needs to be initialized once at the beginning
 
@@ -108,6 +108,10 @@ class HoldemTable(Env):
             get_equity = calculator.montecarlo
         else:
             from tools.montecarlo_python import get_equity
+
+        if Not calc_equity:
+            get_equity = lambda a, b, c, d: 0
+
         self.get_equity = get_equity
         self.use_cpp_montecarlo = use_cpp_montecarlo
         self.num_of_players = 0
@@ -266,6 +270,7 @@ class HoldemTable(Env):
             self.current_player = self.players[self.winner_ix]
 
         self.player_data.position = self.current_player.seat
+        
         self.current_player.equity_alive = self.get_equity(set(self.current_player.cards), set(self.table_cards),
                                                            sum(self.player_cycle.alive), 10)
         self.player_data.equity_to_river_alive = self.current_player.equity_alive
